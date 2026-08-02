@@ -1052,7 +1052,8 @@ function CheckoutStep({ beach, date, mode, selectedPackage, cart, total, onBack,
 
   function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
-  async function handleProceedToPayment() {
+  async function handleProceedToPayment(e) {
+    if (e) e.preventDefault();
     if (!validEmail(email)) { setEmailError("Please enter a valid email for your receipt."); return; }
     setEmailError(null);
     setLoadingIntent(true);
@@ -1145,7 +1146,7 @@ function CheckoutStep({ beach, date, mode, selectedPackage, cart, total, onBack,
             </div>
           )}
 
-          <button onClick={handleProceedToPayment} disabled={loadingIntent}
+          <button onClick={(e) => handleProceedToPayment(e)} disabled={loadingIntent}
             className="w-full py-4 rounded-2xl font-bold flex items-center justify-center gap-2"
             style={{ background: "#D96B4C", color: "#fff", opacity: loadingIntent ? 0.7 : 1 }}>
             {loadingIntent ? <Loader2 className="animate-spin" size={18} /> : <CreditCard size={18} />}
