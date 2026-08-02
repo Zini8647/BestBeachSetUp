@@ -412,6 +412,24 @@ function BookingFlow({ orders, parOverrides, onConfirm }) {
     onConfirm(order);
     setLastOrder(order);
     setStep(6);
+
+    // Send receipt email if we have an email address
+    if (payment.email) {
+      fetch("/api/send-receipt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: payment.email,
+          beachName: beach.name,
+          date,
+          items,
+          total: cartTotal,
+          confirmationId: order.id,
+          waiverName: waiver?.name || null,
+          packageName: order.packageName,
+        }),
+      }).catch((err) => console.error("Receipt email failed:", err));
+    }
   }
 
   function startOver() {
@@ -1109,7 +1127,8 @@ function CheckoutStep({ beach, date, mode, selectedPackage, cart, total, onBack,
               value={email}
               onChange={(e) => { setEmail(e.target.value); setEmailError(null); }}
               placeholder="your@email.com"
-              inputMode="email"
+              type="text"
+              autoComplete="email"
               className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
               style={{ background: "#EDE6D6", color: "#1B3A4B" }}
             />
